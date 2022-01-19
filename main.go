@@ -3,6 +3,7 @@ package main
 import (
 	"booking-app/helper"
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -13,6 +14,8 @@ type UserData struct {
 	numberOfTickets uint
 
 }
+
+var wg = sync.WaitGroup{};
 
 const conferenceTickets int = 50;
 var conferenceName string= "Go Conference"
@@ -27,7 +30,7 @@ func main() {
 	// fmt.Printf("%v \n",remaingTickets)
 	// fmt.Println(&remaingTickets)
 
-	for{
+	// for{
 	// var firstName string
 	// var lastName string
 	// var email string
@@ -51,6 +54,7 @@ func main() {
 
 	// bookings[0] = firstName + " " + lastName
     bookings,remaingTickets := bookTicket(firstName, lastName, userTickets , email )
+	wg.Add(1);
 	go sendTicket(userTickets, firstName, lastName, email )
 	// fmt.Printf("Whole Slice %v \n", bookings)
 	// fmt.Printf("Bookings 1st value %v \n", bookings[0])
@@ -65,7 +69,7 @@ func main() {
 	if remaingTickets <= 0 {
 		// Breaks the loop
 		fmt.Println("Conference booked out!")
-		break
+		// break
 	}
 // } else if userTickets == remaingTickets {
 
@@ -94,7 +98,8 @@ func main() {
 // 		// Default block
 // 		fmt.Println("Invalid city")
 // }
-}
+// }
+wg.Wait()
 }
 
 func greatUsers() {
@@ -167,4 +172,5 @@ func sendTicket(numberOfTickets uint, firstName string, lastName string, email s
 	fmt.Println("-------------------------------------------")
 	fmt.Printf("Sending Ticket: \n%v to %v\n",ticket, email)
 	fmt.Println("-------------------------------------------")
+	wg.Done()
 }
